@@ -1,0 +1,19 @@
+{
+  "name": "virtual-pet",
+  "version": "1.0.0",
+  "description": "an app to care for a digital pet",
+  "main": "server.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/PurplePeopleEated/virtual-pet.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PurplePeopleEated/virtual-pet/issues"
+  },
+  "homepage": "https://github.com/PurplePeopleEated/virtual-pet#readme"
+}
