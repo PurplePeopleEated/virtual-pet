@@ -4,7 +4,11 @@
   "description": "an app to care for a digital pet",
   "main": "server.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
   "repository": {
     "type": "git",

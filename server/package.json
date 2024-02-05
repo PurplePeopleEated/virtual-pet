@@ -4,7 +4,10 @@
   "description": "an app to care for a digital pet",
   "main": "server.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "node server.js",
+    "seed": "node seeds/seed.js",
+    "watch": "nodemon server.js"
   },
   "repository": {
     "type": "git",
