@@ -46,7 +46,11 @@ const petData = [
 db.once('open', async () => {
   //await cleanDB('Pet', 'teches');
   await cleanDB('Pet');
+  await cleanDB('User');
 
+
+  await User.deleteMany();
+  await Pet.deleteMany();
   await Pet.insertMany(petData);
   await User.insertMany(userData)
 
