@@ -1,25 +1,31 @@
 const typeDefs = `
-  type Tech {
+  type User {
     _id: ID!
-    name: String!
+    username: String!
+    email: String!
+    pets: [Pet!]
+    petCount: Int!
   }
 
-  type Matchup {
+  type Pet {
     _id: ID!
-    tech1: String!
-    tech2: String!
-    tech1_votes: Int
-    tech2_votes: Int
+    name: String!
+    species: String!
+    hunger: Int!
+    lastFed: String!
+    lastPlayed: String!
+    owner: User!
   }
 
   type Query {
-    tech: [Tech]
-    matchups(_id: String): [Matchup]
+    user(id: ID!): User
+    pet(id: ID!): Pet
+    petsByUser(userId: ID!): [Pet!]!
   }
 
   type Mutation {
-    createMatchup(tech1: String!, tech2: String!): Matchup
-    createVote(_id: String!, techNum: Int!): Matchup
+    createUser(username: String!, email: String!): User!
+    createPet(name: String!, species: String!, ownerId: ID!): Pet!
   }
 `;
 

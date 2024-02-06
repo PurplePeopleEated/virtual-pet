@@ -1,27 +1,40 @@
-const { Tech, Matchup } = require('../models');
+const { Pet, User } = require('../models');
 
 const resolvers = {
   Query: {
-    tech: async () => {
-      return Tech.find({});
+    user: async (_, { id }) => {
+      return await User.findById(id);
     },
-    matchups: async (parent, { _id }) => {
-      const params = _id ? { _id } : {};
-      return Matchup.find(params);
+    pet: async (_, { id }) => {
+      return await Pet.findById(id);
+    },
+    petsByUser: async (_, { userId }) => {
+      return await Pet.find({ owner: userId });
     },
   },
   Mutation: {
-    createMatchup: async (parent, args) => {
-      const matchup = await Matchup.create(args);
-      return matchup;
+    createUser: async (_, { username, email, password }) => {
+      const user = new User({ username, email, password });
+      await user.save();
+      return user;
     },
-    createVote: async (parent, { _id, techNum }) => {
-      const vote = await Matchup.findOneAndUpdate(
-        { _id },
-        { $inc: { [`tech${techNum}_votes`]: 1 } },
-        { new: true }
-      );
-      return vote;
+    createPet: async (_, { name, species, ownerId }) => {
+      const pet = new Pet({ name, species, owner: ownerId });
+      await pet.save();
+      return pet;
+    },
+  },
+  User: {
+    pets: async (user) => {
+      return await Pet.find({ owner: user._id });
+    },
+    petCount: (user) => {
+      return user.pets.length;
+    },
+  },
+  Pet: {
+    owner: async (pet) => {
+      return await User.findById(pet.owner);
     },
   },
 };
