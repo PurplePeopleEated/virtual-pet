@@ -11,6 +11,7 @@ const typeDefs = `
     _id: ID!
     name: String!
     species: String!
+    birthday: String!
     hunger: Int!
     lastFed: String!
     lastPlayed: String!
