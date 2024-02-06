@@ -25,7 +25,6 @@ const petData = [
     {
       "name": "Doge",
       "species": "Dog",
-      "owner": userData[0]._id,
       "hunger": 50,
       "lastFed": 0,
       "lastPlayed": 0
@@ -34,7 +33,6 @@ const petData = [
     {
       "name": "TestPET",
       "species": "Cat",
-      "owner": userData[1]._id,
       "hunger": 0,
       "lastFed": 0,
       "lastPlayed": 0
@@ -45,11 +43,28 @@ const petData = [
 
 db.once('open', async () => {
   //await cleanDB('Pet', 'teches');
-  await cleanDB('Pet');
+  try {
+    await cleanDB('User');
+    await cleanDB('Pet');
 
-  await Pet.insertMany(petData);
-  await User.insertMany(userData)
+    const users = await User.insertMany(userData);
+    console.log('Users seeded: ', users);
 
-  console.log('Pets/Users seeded!');
-  process.exit(0);
+    const pets = await Pet.insertMany(petData.map((pet, index) => ({
+      ...pet,
+      owner: users[index]._id
+    })));
+    console.log('Pets seeded:', pets);
+
+    await Promise.all(users.map(async (user, index) => {
+      user.pets.push(pets[index]._id);
+      await user.save();
+    }));
+
+    console.log('Pets added to owners!');
+    process.exit(0);
+  } catch (error) {
+    console.error('Error seeding data:', error);
+    process.exit(1);
+  }
 });
