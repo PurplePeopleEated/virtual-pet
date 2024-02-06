@@ -21,6 +21,8 @@ const typeDefs = `
     user(id: ID!): User
     pet(id: ID!): Pet
     petsByUser(userId: ID!): [Pet!]!
+    getAllUsers: [User!]!
+    getAllPets: [Pet!]!
   }
 
   type Mutation {

@@ -11,6 +11,12 @@ const resolvers = {
     petsByUser: async (_, { userId }) => {
       return await Pet.find({ owner: userId });
     },
+    getAllUsers: async () => {
+      return await User.find();
+    },
+    getAllPets: async () => {
+      return await Pet.find();
+    }
   },
   Mutation: {
     createUser: async (_, { username, email, password }) => {
