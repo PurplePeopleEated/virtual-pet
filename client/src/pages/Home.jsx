@@ -32,6 +32,13 @@ const Home = () => {
           </ul>
         )}
       </div>
+      <div className="text-center m-3">
+        <Link to="/login">
+          <button className="btn btn-lg btn-info">
+            Login to view matchup results
+          </button>
+        </Link>
+      </div>
       <div className="card-footer text-center m-3">
         <h2>Ready to create a new matchup?</h2>
         <Link to="/matchup">
