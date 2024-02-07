@@ -10,6 +10,11 @@ species: {
   type: String,
   required: true
 },
+birthday: {
+  type: Date,
+  required: true,
+  default: Date.now
+},
 hunger: {
   type: Number,
   required: true,
