@@ -5,6 +5,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false); // State to determine if it's a sign-up or login
+  const [username, setUsername] = useState('');
 
   // Function to handle form submission
   const handleSubmit = async (e) => {
@@ -14,6 +15,7 @@ const Login = () => {
     const userData = {
       email,
       password,
+      username,
     };
 
     try {
@@ -53,6 +55,17 @@ const Login = () => {
       <div>
         <h1>{isSignUp ? 'Sign Up' : 'Login'}</h1>
         <form onSubmit={handleSubmit}>
+        {isSignUp && ( // Render username field only for sign-up
+            <label>
+              Username:
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </label>
+          )}
           <label>
             Email:
             <input
