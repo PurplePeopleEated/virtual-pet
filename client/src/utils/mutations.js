@@ -46,3 +46,27 @@ export const DELETE_PET = gql`
     }
   }
 `;
+
+// TODO: Add mutation to update pet's hunger
+export const UPDATE_PET_HUNGER = gql`
+  mutation FeedPet($id: ID!, $hunger: Int!) {
+    updatePetHunger(id: $id, hunger: $hunger) {
+      _id
+      name
+      hunger
+      lastFed
+    }
+  }
+`;
+
+// TODO: Add mutation to update pet's lastPlayed timestamp
+export const UPDATE_PET_LAST_PLAYED = gql`
+  mutation PlayWithPet($id: ID!) {
+    updatePetHappiness(id: $id) {
+      _id
+      name
+      happiness
+      lastPlayed
+    }
+  }
+`;
