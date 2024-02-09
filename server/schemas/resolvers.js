@@ -60,6 +60,31 @@ const resolvers = {
         throw new Error(`Failed to delete pet: ${error.message}`);
       }
     },
+
+    feedPet: async (_, { id }) => {
+      const pet = await Pet.findById(id);
+      if (!pet) {
+        throw new Error('Pet not found');
+      }
+      pet.hunger += 10;
+      pet.lastFed = Date.now();
+
+      await pet.save();
+      return pet;
+    },
+
+    playWithPet: async (_, { id }) => {
+      const pet = await Pet.findById(id);
+      if (!pet) {
+        throw new Error('Pet not found');
+      }
+
+      pet.happiness += 10;
+      pet.lastPlayed = Date.now();
+
+      await pet.save();
+      return pet;
+    }
   },
   User: {
     pets: async (user) => {
