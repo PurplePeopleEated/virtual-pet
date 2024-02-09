@@ -31,6 +31,9 @@ const Login = () => {
 
         const data = await response.json();
         // Handle successful sign-up, e.g., redirect to dashboard
+        if(response.ok) {
+          window.location.href = '/petselection';
+        }
       } else {
         // Handle login logic
         const response = await fetch('/api/login', {
