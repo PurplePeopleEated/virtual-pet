@@ -29,6 +29,37 @@ const resolvers = {
       await pet.save();
       return pet;
     },
+    updatePetName: async (_, { id, name }) => {
+      try {
+        const pet = await Pet.findById(id);
+        if (!pet) {
+          throw new Error('Pet not found');
+        }
+
+        pet.name = name;
+
+        await pet.save();
+
+        return pet;
+      } catch (error) {
+        throw new Error(`Failed to update pet's name: ${error.message}`);
+      }
+    },
+
+    deletePet: async (_, { id }) => {
+      try {
+        const pet = await Pet.findById(id);
+        if (!pet) {
+          throw new Error('Pet not found');
+        }
+
+        await pet.remove();
+
+        return pet;
+      } catch (error) {
+        throw new Error(`Failed to delete pet: ${error.message}`);
+      }
+    },
   },
   User: {
     pets: async (user) => {

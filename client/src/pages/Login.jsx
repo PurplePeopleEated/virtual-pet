@@ -32,8 +32,10 @@ const Login = () => {
           },
         });
 
+
         // Handle successful sign-up
         console.log('Sign-up successful!', data);
+
       } else {
         // Handle login logic
        

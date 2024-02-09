@@ -28,3 +28,21 @@ export const CREATE_PET = gql`
     }
   }
 `;
+
+export const UPDATE_PET_NAME = gql`
+  mutation UpdatePetName($id: ID!, $name: String!) {
+    updatePetName(id: $id, name: $name) {
+      _id
+      name
+    }
+  }
+`;
+
+export const DELETE_PET = gql`
+  mutation DeletePet($id: ID!) {
+    deletePet(id: $id) {
+      _id
+      name
+    }
+  }
+`;
