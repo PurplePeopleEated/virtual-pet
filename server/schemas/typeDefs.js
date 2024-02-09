@@ -29,6 +29,8 @@ const typeDefs = `
   type Mutation {
     createUser(username: String!, email: String!): User!
     createPet(name: String!, species: String!, ownerId: ID!): Pet!
+    updatePetName(id: ID!, name: String!): Pet!
+    deletePet(id: ID!): Pet!
   }
 `;
 
