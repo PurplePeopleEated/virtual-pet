@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { CREATE_USER } from '../utils/mutations.js'; 
 
 const Login = () => {
   // State to hold user input values
@@ -6,6 +8,9 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false); // State to determine if it's a sign-up or login
   const [username, setUsername] = useState('');
+
+  // Define the mutation hook
+  const [createUser, { loading, error }] = useMutation(CREATE_USER);
 
   // Function to handle form submission
   const handleSubmit = async (e) => {
@@ -20,36 +25,24 @@ const Login = () => {
 
     try {
       if (isSignUp) {
-        // Handle sign-up logic
-        const response = await fetch('/api/signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+        // Execute the mutation
+        const { data } = await createUser({
+          variables: {
+            ...userData,
           },
-          body: JSON.stringify(userData),
         });
 
-        const data = await response.json();
-        // Handle successful sign-up, e.g., redirect to dashboard
-        if(response.ok) {
-          window.location.href = '/petselection';
-        }
+
+        // Handle successful sign-up
+        console.log('Sign-up successful!', data);
+
       } else {
         // Handle login logic
-        const response = await fetch('/api/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(userData),
-        });
-
-        const data = await response.json();
-        // Handle successful login, e.g., store authentication token
+       
       }
     } catch (error) {
       console.error('Error:', error);
-      // Handle error, e.g., display error message to the user
+      
     }
   };
 
@@ -87,7 +80,9 @@ const Login = () => {
               required
             />
           </label>
-          <button type="submit">{isSignUp ? 'Sign Up' : 'Login'}</button>
+          <button type="submit" disabled={loading}>{isSignUp ? 'Sign Up' : 'Login'}</button>
+          {loading && <p>Loading...</p>}
+          {error && <p>Error: {error.message}</p>}
         </form>
         <p>
           {isSignUp
