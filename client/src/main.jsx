@@ -1,9 +1,9 @@
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import App from './App.jsx';
-import Home from './pages/Home';
+import App from './App';
 import Login from './pages/Login';
+import PetSelection from './pages/PetSelection';
 
 const router = createBrowserRouter([
   {
@@ -12,12 +12,11 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />
-      },
-      {
-        path: '/login',
         element: <Login />
-      }
+      }, {
+        path: '/petselection',
+        element: <PetSelection />
+      },
     ],
   },
 ]);
