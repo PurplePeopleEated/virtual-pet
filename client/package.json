@@ -4,9 +4,12 @@
   "description": "an app to care for a digital pet",
   "main": "server.js",
   "scripts": {
-    "test": "test",
-    "dev": "vite",
+    "test": "",
     "build": "vite build",
+    "heroku-build": "tsc && vite build",
+    "postinstall": " cd client && npm run heroku-build",
+    "serve-heroku": "vite --host 0.0.0.0 preview",
+    "dev": "vite",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
