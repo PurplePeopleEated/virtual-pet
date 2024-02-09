@@ -11,6 +11,16 @@ export const CREATE_USER = gql`
   }
 `;
 
+export const LOGIN_USER = gql`
+  mutation LoginUser($email: String!, $password: String!) {
+    loginUser(email: $email, password: $password) {
+      _id
+      username
+      email
+    }
+  }
+`;
+
 export const CREATE_PET = gql`
   mutation CreatePet($name: String!, $species: String!, $ownerId: ID!) {
     createPet(name: $name, species: $species, ownerId: $ownerId) {
