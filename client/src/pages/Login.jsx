@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { CREATE_USER } from '../utils/mutations.js'; 
+import { CREATE_USER, LOGIN_USER } from '../utils/mutations.js'; 
 
 const Login = () => {
   // State to hold user input values
@@ -9,40 +9,41 @@ const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false); // State to determine if it's a sign-up or login
   const [username, setUsername] = useState('');
 
-  // Define the mutation hook
-  const [createUser, { loading, error }] = useMutation(CREATE_USER);
+  // Define the mutation hooks
+  const [createUser, { loading: signUpLoading, error: signUpError }] = useMutation(CREATE_USER);
+  const [loginUser, { loading: loginLoading, error: loginError }] = useMutation(LOGIN_USER); // Use useMutation for mutations
 
   // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Construct the data to be sent to the server
-    const userData = {
-      email,
-      password,
-      username,
-    };
-
     try {
       if (isSignUp) {
-        // Execute the mutation
+        // Execute the sign-up mutation
         const { data } = await createUser({
           variables: {
-            ...userData,
+            email,
+            password,
+            username,
           },
         });
 
-
         // Handle successful sign-up
         console.log('Sign-up successful!', data);
-
       } else {
-        // Handle login logic
-       
+        // Execute the login mutation
+        const { data } = await loginUser({
+          variables: {
+            email,
+            password,
+          },
+        });
+
+        // Handle successful login
+        console.log('Login successful!', data);
       }
     } catch (error) {
       console.error('Error:', error);
-      
     }
   };
 
@@ -51,7 +52,7 @@ const Login = () => {
       <div>
         <h1>{isSignUp ? 'Sign Up' : 'Login'}</h1>
         <form onSubmit={handleSubmit}>
-        {isSignUp && ( // Render username field only for sign-up
+          {isSignUp && ( // Render username field only for sign-up
             <label>
               Username:
               <input
@@ -80,9 +81,11 @@ const Login = () => {
               required
             />
           </label>
-          <button type="submit" disabled={loading}>{isSignUp ? 'Sign Up' : 'Login'}</button>
-          {loading && <p>Loading...</p>}
-          {error && <p>Error: {error.message}</p>}
+          <button type="submit" disabled={isSignUp ? signUpLoading : loginLoading}>
+            {isSignUp ? 'Sign Up' : 'Login'}
+          </button>
+          {(signUpLoading || loginLoading) && <p>Loading...</p>}
+          {(signUpError || loginError) && <p>Error: {signUpError ? signUpError.message : loginError.message}</p>}
         </form>
         <p>
           {isSignUp
