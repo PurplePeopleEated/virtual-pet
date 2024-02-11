@@ -11,6 +11,16 @@ export const CREATE_USER = gql`
   }
 `;
 
+export const LOGIN_USER = gql`
+  mutation LoginUser($email: String!, $password: String!) {
+    loginUser(email: $email, password: $password) {
+      _id
+      username
+      email
+    }
+  }
+`;
+
 export const CREATE_PET = gql`
   mutation CreatePet($name: String!, $species: String!, $ownerId: ID!) {
     createPet(name: $name, species: $species, ownerId: $ownerId) {
@@ -43,6 +53,30 @@ export const DELETE_PET = gql`
     deletePet(id: $id) {
       _id
       name
+    }
+  }
+`;
+
+// TODO: Add mutation to update pet's hunger
+export const UPDATE_PET_HUNGER = gql`
+  mutation FeedPet($id: ID!, $hunger: Int!) {
+    updatePetHunger(id: $id, hunger: $hunger) {
+      _id
+      name
+      hunger
+      lastFed
+    }
+  }
+`;
+
+// TODO: Add mutation to update pet's lastPlayed timestamp
+export const UPDATE_PET_LAST_PLAYED = gql`
+  mutation PlayWithPet($id: ID!) {
+    updatePetHappiness(id: $id) {
+      _id
+      name
+      happiness
+      lastPlayed
     }
   }
 `;
