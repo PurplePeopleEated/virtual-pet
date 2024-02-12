@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_PET } from '../utils/mutations';
 import { CURRENT_USER } from '../utils/queries';
 
-const PetSelection = () => {
+const PetSelection = ({ history }) => {
   //const [selectedPet, setSelectedPet] = useState(null);
   const { data: userData } = useQuery(CURRENT_USER);
   const [createPet] = useMutation(CREATE_PET);
@@ -12,13 +12,26 @@ const PetSelection = () => {
     const name = prompt(`Please enter a name for your new ${species}:`);
     if (name && userData && userData.currentUser) {
       try {
-        await createPet({
+        const { data } = await createPet({
           variables: {
             name,
             species,
             ownerId: userData.currentUser._id,
           },
         });
+
+        const newPet = data.createPet;
+        const updatedUser = {
+          ...userData.currentUser,
+          pets: [...userData.currentUser.pets, newPet],
+        };
+
+        client.writeQuery({
+          query: CURRENT_USER,
+          data: { currentUser: updatedUser },
+        });
+
+        history.push('/petdashboard');
       } catch (error) {
         console.error('Error creating pet:', error);
       }
