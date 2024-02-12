@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CREATE_USER, LOGIN_USER } from '../utils/mutations.js'; 
+import AuthService from '../utils/auth.js';
 
 const Login = () => {
   // State to hold user input values
@@ -17,39 +18,69 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!email || !password || (isSignUp && !username)) {
+      console.error('Please fill in all required fields.');
+      return;
+    }
+
     try {
       if (isSignUp) {
         // Execute the sign-up mutation
         const { data } = await createUser({
           variables: {
+            username,
             email,
             password,
-            username,
           },
         });
 
         // Handle successful sign-up
         console.log('Sign-up successful!', data);
         
-        window.location.href = '/petselection';
+        await handleLogin(email, password, true);
       } else {
-        // Execute the login mutation
-        const { data } = await loginUser({
-          variables: {
-            email,
-            password,
-          },
-        });
-
-        // Handle successful login
-        console.log('Login successful!', data);
-
-        window.location.href = '/petdashboard';
+        // Handle login directly
+        await handleLogin(email, password);
       }
     } catch (error) {
       console.error('Error:', error);
     }
   };
+
+  const handleLogin = async (email, password, isSignUp = false) => {
+    console.log('Email:', email);
+    console.log('Password:', password);
+
+        // Execute the login mutation
+        try {
+          const { data } = await loginUser({
+            variables: {
+              email,
+              password,
+            },
+          });
+
+        // Handle successful login
+        console.log('Login successful!', data);
+
+        AuthService.login(data.loginUser.token);
+
+        if (isSignUp) {
+          window.location.href = '/petselection'; // Redirect to pet selection page after sign-up
+        } else {
+          // Redirect to pet dashboard if the user has pets
+          if (data.loginUser.hasPets) {
+            window.location.href = '/petdashboard';
+          } else {
+            // Redirect to pet selection if the user doesn't have pets
+            window.location.href = '/petselection';
+          }
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+  };
+
 
   return (
     <div>
