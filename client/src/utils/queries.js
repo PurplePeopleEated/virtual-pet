@@ -92,3 +92,23 @@ export const GET_ALL_PETS = gql`
     }
   }
 `;
+
+export const CURRENT_USER = gql`
+  query {
+    currentUser {
+      _id
+      username
+      email
+      pets {
+        _id
+        name
+        species
+        birthday
+        hunger
+        lastFed
+        happiness
+        lastPlayed
+      }
+    }
+  }
+`;
