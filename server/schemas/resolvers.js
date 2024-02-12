@@ -1,4 +1,5 @@
 const { Pet, User } = require('../models');
+const bcrypt = require('bcrypt');
 
 const resolvers = {
   Query: {
@@ -16,19 +17,47 @@ const resolvers = {
     },
     getAllPets: async () => {
       return await Pet.find();
+    },
+    currentUser: async (parent, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new Error('Authentication required');
+      }
+
+      return await User.findById(currentUser._id);
     }
   },
   Mutation: {
     createUser: async (_, { username, email, password }) => {
-      const user = new User({ username, email, password });
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = new User({ username, email, password: hashedPassword });
+      
       await user.save();
+      
+      return { _id: user._id, username: user.username, email: user.email };
+    },
+
+    loginUser: async (_, { email, password }) => {
+      const user = await User.findOne({ email });
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        throw new Error('Invalid password');
+      }
+
       return user;
     },
+
     createPet: async (_, { name, species, ownerId }) => {
       const pet = new Pet({ name, species, owner: ownerId });
+      
       await pet.save();
+      
       return pet;
     },
+
     updatePetName: async (_, { id, name }) => {
       try {
         const pet = await Pet.findById(id);

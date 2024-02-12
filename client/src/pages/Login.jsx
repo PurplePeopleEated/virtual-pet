@@ -30,6 +30,8 @@ const Login = () => {
 
         // Handle successful sign-up
         console.log('Sign-up successful!', data);
+        
+        window.location.href = '/petselection';
       } else {
         // Execute the login mutation
         const { data } = await loginUser({
@@ -41,6 +43,8 @@ const Login = () => {
 
         // Handle successful login
         console.log('Login successful!', data);
+
+        window.location.href = '/petdashboard';
       }
     } catch (error) {
       console.error('Error:', error);
