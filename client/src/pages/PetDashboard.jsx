@@ -1,4 +1,4 @@
-const PetPage = ({ pet }) => {
+const PetDashboard = ({ pet }) => {
   return (
     <div>
       <Navbar />
@@ -27,7 +27,7 @@ const Navbar = () => {
         <ul className="nav-links">
           <li><a href="/">Home</a></li>
           <li><a href="/stats">Stats</a></li>
-          <li><a href="/settings">Settings</a></li>
+          <li><a href="/otherpets">Other Pets</a></li>
           <li><a href="/logout">Logout</a></li>
         </ul>
       </div>
@@ -35,4 +35,4 @@ const Navbar = () => {
   );
 };
 
-export default PetPage;
+export default PetDashboard;
