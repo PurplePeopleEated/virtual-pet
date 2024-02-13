@@ -1,23 +1,50 @@
-import { useMutation } from "@apollo/client";
-import React, { useState } from 'react';
+import { useMutation, useQuery } from "@apollo/client";
+import React, { useState, useEffect } from 'react';
 import { UPDATE_PET_HUNGER, UPDATE_PET_LAST_PLAYED } from "../utils/mutations";
+import { GET_PETS_BY_USER } from "../utils/queries";
+import AuthService from '../utils/auth';
 
 const PetDashboard = () => {
   const [feedPet] = useMutation(UPDATE_PET_HUNGER);
   const [playWithPet] = useMutation(UPDATE_PET_LAST_PLAYED);
+  const [pet, setPet] = useState(null);
 
-  const [user, setUser] = useState({
+  /*const { loading, error, data } = useQuery(GET_PET, {
+    variables: { petId: AuthService.getUser().data.pet._id } // Pass the logged-in user's pet ID as a variable
+  });*/
+
+  //const { loading, error, data } = useQuery(GET_PETS_BY_USER);
+
+  /*const [user, setUser] = useState({
     name: "lil gooberoni",
     hunger: 50,
     lastPlayed: "2024-02-11T16:00:00.000Z"
+  });*/
+
+  useEffect(() => {
+    const token = AuthService.getToken();
+    if (!token) {
+      console.log('No token found. Redirecting to login page...');
+      window.location.href = '/';
+    }
+  }, []);
+
+  const { loading, error, data } = useQuery(GET_PETS_BY_USER, {
+    variables: { userId: AuthService.getUser()?.data._id },
   });
+
+  useEffect(() => {
+    if (data && data.petsByUser.length > 0) {
+      setPet(data.petsByUser[0]);
+    }
+  }, [data]);
 
   const handleFeedPet = async () => {
     try {
-      const newHungerValue = user.hunger + 10;
+      const newHungerValue = pet.hunger + 10;
       await feedPet({
         variables: {
-          id: 1,
+          id: pet._id,
           hunger: newHungerValue
         },
       });
@@ -32,7 +59,7 @@ const PetDashboard = () => {
       const newLastPlayed = Date.now();
       await playWithPet({
         variables: {
-          id: 1,
+          id: pet._id,
           lastPlayed: newLastPlayed
         },
       });
@@ -46,9 +73,13 @@ const PetDashboard = () => {
     <div className="container mx-auto px-4">
       <h1 className="text-4xl mb-4 font-semibold">Pet Dashboard</h1>
       <div className="mb-4 text-center">
-        <p className="text-3xl mb-4 font-semibold">{user.name}</p>
-        <p className="text-xl mb-4 font-semibold">Hunger: {user.hunger}</p>
-        <p className="text-xl mb-4 font-semibold">Last Played: {user.lastPlayed}</p>
+      {pet && (
+          <>
+            <p className="text-3xl mb-4 font-semibold">{pet.name}</p>
+            <p className="text-xl mb-4 font-semibold">Hunger: {pet.hunger}</p>
+            <p className="text-xl mb-4 font-semibold">Last Played: {pet.lastPlayed}</p>
+          </>
+        )}
         <img src="/images/pet.jpg" alt="Pet" className="rounded-full h-64 w-64 object-cover mx-auto" />
       </div>
       <div className="flex space-x-4 justify-center"> 
