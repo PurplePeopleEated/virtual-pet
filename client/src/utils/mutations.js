@@ -23,6 +23,14 @@ export const LOGIN_USER = gql`
   }
 `;
 
+export const LOGOUT_USER = gql`
+  mutation LogoutUser {
+    logoutUser {
+      message
+    }
+  }
+`
+
 export const CREATE_PET = gql`
   mutation CreatePet($name: String!, $species: String!, $ownerId: ID!) {
     createPet(name: $name, species: $species, ownerId: $ownerId) {

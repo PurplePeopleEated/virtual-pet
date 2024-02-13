@@ -1,3 +1,6 @@
+import { useMutation } from "@apollo/client";
+import { LOGOUT_USER } from '../utils/mutations';
+
 const PetDashboard = ({ pet }) => {
   return (
     <div>
@@ -20,15 +23,27 @@ const PetDashboard = ({ pet }) => {
 };
 
 const Navbar = () => {
+  const [logoutUser] = useMutation(LOGOUT_USER);
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
   return (
     <nav className="navbar">
       <div className="container">
         <h1>My Pet App</h1>
         <ul className="nav-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="/stats">Stats</a></li>
-          <li><a href="/otherpets">Other Pets</a></li>
-          <li><a href="/logout">Logout</a></li>
+        <li><Link to="/petdashboard">Home</Link></li>
+          <li><Link to="/stats">Stats</Link></li>
+          <li><Link to="/otherpets">Other Pets</Link></li>
+          <li><button onClick={handleLogout}>Logout</button></li>
         </ul>
       </div>
     </nav>

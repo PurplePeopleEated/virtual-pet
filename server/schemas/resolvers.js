@@ -1,6 +1,6 @@
 const { Pet, User } = require('../models');
 const bcrypt = require('bcrypt');
-const { signToken } = require('../utils/auth');
+const { signToken, AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
   Query: {
@@ -52,6 +52,18 @@ const resolvers = {
 
       const token = signToken(user);
       return { token, user };
+    },
+
+    logoutUser: async (_, __, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('User not logged in');
+      }
+
+      const token = currentUser.token;
+
+      await revokeToken(token);
+
+      return 'Logged out successfully';
     },
 
     createPet: async (_, { name, species, ownerId }, { currentUser }) => {
@@ -153,5 +165,15 @@ const resolvers = {
     },
   },
 };
+
+async function revokeToken(token) {
+  try {
+    await RevokedToken.create({ token });
+    console.log('Token revoked successfully:', token);
+  } catch (error) {
+    console.error('Failed to revoke token:', error);
+    throw new Error('Failed to revoke token');
+  }
+}
 
 module.exports = resolvers;
