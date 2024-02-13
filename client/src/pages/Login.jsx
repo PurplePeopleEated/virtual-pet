@@ -83,51 +83,71 @@ const Login = () => {
 
 
   return (
-    <div>
-      <div>
-        <h1>{isSignUp ? 'Sign Up' : 'Login'}</h1>
-        <form onSubmit={handleSubmit}>
-          {isSignUp && ( // Render username field only for sign-up
-            <label>
-              Username:
+    <div className="p-6">
+      <div className="container mx-auto px-4">
+        <h1 className="text-2xl font-bold text-center mb-4">{isSignUp ? 'Sign Up' : 'Login'}</h1>
+        <form onSubmit={handleSubmit} className="w-full max-w-lg mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+          <div className="mb-4">
+            {isSignUp && ( // Render username field only for sign-up
+              <div className="mb-6">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
+                  Username:
+                </label>
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+            <div className="mb-6">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
+                Email:
+              </label>
               <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
-            </label>
-          )}
-          <label>
-            Email:
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Password:
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </label>
-          <button type="submit" disabled={isSignUp ? signUpLoading : loginLoading}>
-            {isSignUp ? 'Sign Up' : 'Login'}
-          </button>
-          {(signUpLoading || loginLoading) && <p>Loading...</p>}
-          {(signUpError || loginError) && <p>Error: {signUpError ? signUpError.message : loginError.message}</p>}
+            </div>
+            <div className="mb-6">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+                Password:
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <div className="w-full px-3 text-center">
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                type="submit"
+                disabled={isSignUp ? signUpLoading : loginLoading}
+              >
+                {isSignUp ? 'Sign Up' : 'Login'}
+              </button>
+              {(signUpLoading || loginLoading) && <p>Loading...</p>}
+            </div>
+          </div>
         </form>
-        <p>
+        {(signUpError || loginError) && <p className="text-red-500 text-xs italic">Error: {signUpError ? signUpError.message : loginError.message}</p>}
+        <p className="text-center text-sm">
           {isSignUp
             ? 'Already have an account?'
             : 'Don\'t have an account?'}
-          <button onClick={() => setIsSignUp(!isSignUp)}>
-            {isSignUp ? 'Login' : 'Sign Up'}
+          <button onClick={() => setIsSignUp(!isSignUp)} className="text-blue-500 hover:text-blue-800">
+            &nbsp;{isSignUp ? 'Login' : 'Sign Up'}
           </button>
         </p>
       </div>
