@@ -15,7 +15,7 @@ This site is for users who love animals to adopt and interact with their own! Yo
 Create an account [here](https://petappthingy-aa69f1e65e58.herokuapp.com/). You will be prompted to adopt a pet when you do this. After you name your pet, you will see the Pet Dashboard page. From there 
 you can both feed your newly adopted pet and give it some pats to raise it's happiness. When you are done playing, hit the `Logout` button to finish and leave!
 
-![screenshot of the website](scrnshot.png)
+![screenshot of the website](virtual-pet-screenshot.png)
 
 ## License
 [MIT License](https://opensource.org/license/mit/)
