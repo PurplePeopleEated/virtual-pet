@@ -39,16 +39,23 @@ const PetDashboard = () => {
     }
   }, [data]);
 
+  const formatDate = (timestamp) => {
+    const date = new Date(parseInt(timestamp));
+    return date.toLocaleString();
+  }
+
   const handleFeedPet = async () => {
     try {
       const newHungerValue = pet.hunger + 10;
+      console.log(pet._id);
+      console.log(newHungerValue);
       await feedPet({
         variables: {
-          id: pet._id,
+          _id: pet._id,
           hunger: newHungerValue
         },
       });
-      setUser(prevUser => ({ ...prevUser, hunger: newHungerValue }));
+      setPet(prevPet => ({ ...prevPet, hunger: newHungerValue }));
     } catch (error) {
       console.error(error);
     }
@@ -56,14 +63,16 @@ const PetDashboard = () => {
   
   const handlePlayWithPet = async () => {
     try {
-      const newLastPlayed = Date.now();
+      const newLastPlayed = Date.now().toString();
+      console.log(pet._id);
+      console.log(newLastPlayed);
       await playWithPet({
         variables: {
-          id: pet._id,
+          _id: pet._id,
           lastPlayed: newLastPlayed
         },
       });
-      setUser(prev => ({ ...prev, lastPlayed: newLastPlayed }));
+      setPet(prevPet => ({ ...prevPet, lastPlayed: newLastPlayed }));
     } catch (error) {
       console.error(error);
     }
@@ -77,7 +86,7 @@ const PetDashboard = () => {
           <>
             <p className="text-3xl mb-4 font-semibold">{pet.name}</p>
             <p className="text-xl mb-4 font-semibold">Hunger: {pet.hunger}</p>
-            <p className="text-xl mb-4 font-semibold">Last Played: {pet.lastPlayed}</p>
+            <p className="text-xl mb-4 font-semibold">Last Played: {formatDate(pet.lastPlayed)}</p>
           </>
         )}
         <img src="/images/pet.jpg" alt="Pet" className="rounded-full h-64 w-64 object-cover mx-auto" />

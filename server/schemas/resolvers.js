@@ -155,12 +155,8 @@ const resolvers = {
       }
     },
 
-    feedPet: async (_, { id, hunger }, { currentUser }) => {
-      if (!currentUser) {
-        throw new Error('Authentication required');
-      }
-
-      const pet = await Pet.findById(id);
+    feedPet: async (_, { _id, hunger }) => {
+      const pet = await Pet.findById(_id);
       if (!pet) {
         throw new Error('Pet not found');
       }
@@ -168,15 +164,17 @@ const resolvers = {
       pet.lastFed = Date.now();
 
       await pet.save();
-      return pet;
+      return {
+        _id: pet._id,
+        name: pet.name,
+        hunger: pet.hunger,
+        lastFed: pet.lastFed
+      };
     },
 
-    playWithPet: async (_, { id }, { currentUser }) => {
-      if (!currentUser) {
-        throw new Error('Authentication required');
-      }
+    updatePetLastPlayed: async (_, { _id, lastPlayed }) => {
 
-      const pet = await Pet.findById(id);
+      const pet = await Pet.findById(_id);
       if (!pet) {
         throw new Error('Pet not found');
       }
@@ -185,7 +183,12 @@ const resolvers = {
       pet.lastPlayed = Date.now();
 
       await pet.save();
-      return pet;
+      return {
+        _id: pet._id,
+        name: pet.name,
+        happiness: pet.happiness,
+        lastPlayed: pet.lastPlayed
+      };
     }
   },
   User: {
