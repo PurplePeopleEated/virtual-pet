@@ -30,11 +30,11 @@ function Navigation() {
           Login
         </Link>
 
-        <Link to="/" className={location.pathname === "/" ? activeLink : inactiveLink}>
+        <Link to="/" className={location.pathname === "/logout" ? activeLink : inactiveLink} onClick={handleLogout}>
           Logout
         </Link>
 
-        <Link to="/petdashboard" className={location.pathname === "/projects" ? activeLink : inactiveLink}>
+        <Link to="/petdashboard" className={location.pathname === "/petdashboard" ? activeLink : inactiveLink}>
           Pet Dashboard
         </Link>
       </nav>
