@@ -26,6 +26,13 @@ lastFed: {
   type: Date,
   default: Date.now
 },
+happiness: {
+  type: Number,
+  required: true,
+  min: 0,
+  max: 100,
+  default: 50
+},
 lastPlayed: {
   type: Date,
   default: Date.now

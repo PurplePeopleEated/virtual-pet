@@ -19,6 +19,16 @@ export const GET_USER = gql`
   }
 `;
 
+export const LOGIN_USER = gql`
+  mutation LoginUser($email: String!, $password: String!) {
+    loginUser(email: $email, password: $password) {
+      _id
+      username
+      email
+    }
+  }
+`;
+
 export const GET_PET = gql`
   query GetPet($petId: ID!) {
     pet(id: $petId) {
@@ -78,6 +88,26 @@ export const GET_ALL_PETS = gql`
         _id
         username
         email
+      }
+    }
+  }
+`;
+
+export const CURRENT_USER = gql`
+  query {
+    currentUser {
+      _id
+      username
+      email
+      pets {
+        _id
+        name
+        species
+        birthday
+        hunger
+        lastFed
+        happiness
+        lastPlayed
       }
     }
   }

@@ -1,4 +1,6 @@
 const { Pet, User } = require('../models');
+const bcrypt = require('bcrypt');
+const { signToken, AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
   Query: {
@@ -16,19 +18,142 @@ const resolvers = {
     },
     getAllPets: async () => {
       return await Pet.find();
+    },
+    currentUser: async (parent, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new Error('Authentication required');
+      }
+
+      return await User.findById(currentUser._id);
     }
   },
   Mutation: {
     createUser: async (_, { username, email, password }) => {
-      const user = new User({ username, email, password });
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = new User({ username, email, password: hashedPassword });
+      
       await user.save();
-      return user;
+      
+      const token = signToken(user);
+      return { _id: user._id, username: user.username, email: user.email, password: hashedPassword, token };
     },
-    createPet: async (_, { name, species, ownerId }) => {
-      const pet = new Pet({ name, species, owner: ownerId });
+
+    loginUser: async (_, { email, password }) => {
+      const user = await User.findOne({ email });
+      console.log(user);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        throw new Error('Invalid password');
+      }
+
+      const token = signToken(user);
+      return { token, user };
+    },
+
+    logoutUser: async (_, __, { currentUser }) => {
+      if (!currentUser) {
+        throw new AuthenticationError('User not logged in');
+      }
+
+      const token = currentUser.token;
+
+      await revokeToken(token);
+
+      return 'Logged out successfully';
+    },
+
+    createPet: async (_, { name, species, ownerId }, { currentUser }) => {
+      if (!currentUser) {
+        throw new Error('Authentication required');
+      }
+      try{
+        const pet = new Pet({ name, species, owner: ownerId });
+        const user = await User.findById(ownerId);
+        user.pets.push(pet._id);
+        await user.save();
+      
+      return { pet, owner: user};
+      }catch (error) {
+      throw new Error(`Failed to create pet: ${error.message}`);
+      }
+    },
+
+    updatePetName: async (_, { id, name }, { currentUser }) => {
+      if (!currentUser) {
+        throw new Error('Authentication required');
+      }
+      
+      try {
+        const pet = await Pet.findById(id);
+        if (!pet) {
+          throw new Error('Pet not found');
+        }
+
+        pet.name = name;
+
+        await pet.save();
+
+        return pet;
+      } catch (error) {
+        throw new Error(`Failed to update pet's name: ${error.message}`);
+      }
+    },
+
+    deletePet: async (_, { id }, { currentUser }) => {
+      if (!currentUser) {
+        throw new Error('Authentication required');
+      }
+
+      try {
+        const pet = await Pet.findById(id);
+        if (!pet) {
+          throw new Error('Pet not found');
+        }
+
+        await pet.remove();
+
+        return pet;
+      } catch (error) {
+        throw new Error(`Failed to delete pet: ${error.message}`);
+      }
+    },
+
+    feedPet: async (_, { id, hunger }, { currentUser }) => {
+      if (!currentUser) {
+        throw new Error('Authentication required');
+      }
+
+      const pet = await Pet.findById(id);
+      if (!pet) {
+        throw new Error('Pet not found');
+      }
+      pet.hunger += 10;
+      pet.lastFed = Date.now();
+
       await pet.save();
       return pet;
     },
+
+    playWithPet: async (_, { id }, { currentUser }) => {
+      if (!currentUser) {
+        throw new Error('Authentication required');
+      }
+
+      const pet = await Pet.findById(id);
+      if (!pet) {
+        throw new Error('Pet not found');
+      }
+
+      pet.happiness += 10;
+      pet.lastPlayed = Date.now();
+
+      await pet.save();
+      return pet;
+    }
   },
   User: {
     pets: async (user) => {
@@ -44,5 +169,15 @@ const resolvers = {
     },
   },
 };
+
+async function revokeToken(token) {
+  try {
+    await RevokedToken.create({ token });
+    console.log('Token revoked successfully:', token);
+  } catch (error) {
+    console.error('Failed to revoke token:', error);
+    throw new Error('Failed to revoke token');
+  }
+}
 
 module.exports = resolvers;
