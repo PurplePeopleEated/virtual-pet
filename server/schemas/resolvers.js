@@ -58,12 +58,16 @@ const resolvers = {
       if (!currentUser) {
         throw new Error('Authentication required');
       }
+      try{
+        const pet = new Pet({ name, species, owner: ownerId });
+        const user = await User.findById(ownerId);
+        user.pets.push(pet._id);
+        await user.save();
       
-      const pet = new Pet({ name, species, owner: ownerId });
-      
-      await pet.save();
-      
-      return pet;
+      return { pet, owner: user};
+      }catch (error) {
+      throw new Error(`Failed to create pet: ${error.message}`);
+      }
     },
 
     updatePetName: async (_, { id, name }, { currentUser }) => {

@@ -10,7 +10,7 @@ const PetSelection = ({ history }) => {
 
   const handleSelectPet = async (species) => {
     const name = prompt(`Please enter a name for your new ${species}:`);
-    if (name && userData && userData.currentUser) {
+    //if (name && userData && userData.currentUser) {
       try {
         const { data } = await createPet({
           variables: {
@@ -35,7 +35,7 @@ const PetSelection = ({ history }) => {
       } catch (error) {
         console.error('Error creating pet:', error);
       }
-    }
+    //}
   };
 
   return (
