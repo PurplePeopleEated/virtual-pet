@@ -1,5 +1,6 @@
 const { Pet, User } = require('../models');
 const bcrypt = require('bcrypt');
+const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
@@ -33,11 +34,13 @@ const resolvers = {
       
       await user.save();
       
-      return { _id: user._id, username: user.username, email: user.email };
+      const token = signToken(user);
+      return { _id: user._id, username: user.username, email: user.email, password: hashedPassword, token };
     },
 
     loginUser: async (_, { email, password }) => {
       const user = await User.findOne({ email });
+      console.log(user);
       if (!user) {
         throw new Error('User not found');
       }
@@ -47,10 +50,15 @@ const resolvers = {
         throw new Error('Invalid password');
       }
 
-      return user;
+      const token = signToken(user);
+      return { token, user };
     },
 
-    createPet: async (_, { name, species, ownerId }) => {
+    createPet: async (_, { name, species, ownerId }, { currentUser }) => {
+      if (!currentUser) {
+        throw new Error('Authentication required');
+      }
+      
       const pet = new Pet({ name, species, owner: ownerId });
       
       await pet.save();
@@ -58,7 +66,11 @@ const resolvers = {
       return pet;
     },
 
-    updatePetName: async (_, { id, name }) => {
+    updatePetName: async (_, { id, name }, { currentUser }) => {
+      if (!currentUser) {
+        throw new Error('Authentication required');
+      }
+      
       try {
         const pet = await Pet.findById(id);
         if (!pet) {
@@ -75,7 +87,11 @@ const resolvers = {
       }
     },
 
-    deletePet: async (_, { id }) => {
+    deletePet: async (_, { id }, { currentUser }) => {
+      if (!currentUser) {
+        throw new Error('Authentication required');
+      }
+
       try {
         const pet = await Pet.findById(id);
         if (!pet) {
@@ -90,7 +106,11 @@ const resolvers = {
       }
     },
 
-    feedPet: async (_, { id }) => {
+    feedPet: async (_, { id, hunger }, { currentUser }) => {
+      if (!currentUser) {
+        throw new Error('Authentication required');
+      }
+
       const pet = await Pet.findById(id);
       if (!pet) {
         throw new Error('Pet not found');
@@ -102,7 +122,11 @@ const resolvers = {
       return pet;
     },
 
-    playWithPet: async (_, { id }) => {
+    playWithPet: async (_, { id }, { currentUser }) => {
+      if (!currentUser) {
+        throw new Error('Authentication required');
+      }
+
       const pet = await Pet.findById(id);
       if (!pet) {
         throw new Error('Pet not found');
