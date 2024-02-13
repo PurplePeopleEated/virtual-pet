@@ -99,7 +99,17 @@ const resolvers = {
         user.pets.push(pet._id);
         await user.save();
     
-        return { pet, owner: user };
+        //return { pet, owner: user };
+
+        return { 
+          _id: pet._id, // Return the pet's _id
+          name: pet.name,
+          species: pet.species,
+          hunger: pet.hunger,
+          lastFed: pet.lastFed,
+          lastPlayed: pet.lastPlayed,
+          owner: user 
+        };
       } catch (error) {
         throw new Error(`Failed to create pet: ${error.message}`);
       }
