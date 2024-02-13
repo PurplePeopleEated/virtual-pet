@@ -20,6 +20,11 @@ const typeDefs = `
     owner: User!
   }
 
+  type AuthPayload {
+    token: String!
+    user: User!
+  }
+
   type Query {
     user(id: ID!): User
     pet(id: ID!): Pet
@@ -31,7 +36,7 @@ const typeDefs = `
 
   type Mutation {
     createUser(username: String!, email: String!, password: String!): User!
-    loginUser(email: String!, password: String!): User
+    loginUser(email: String!, password: String!): AuthPayload
     createPet(name: String!, species: String!, ownerId: ID!): Pet!
     updatePetName(id: ID!, name: String!): Pet!
     deletePet(id: ID!): Pet!
