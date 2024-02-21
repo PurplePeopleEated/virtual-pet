@@ -69,8 +69,8 @@ export const DELETE_PET = gql`
 
 // TODO: Add mutation to update pet's hunger
 export const UPDATE_PET_HUNGER = gql`
-  mutation FeedPet($id: ID!, $hunger: Int!) {
-    updatePetHunger(id: $id, hunger: $hunger) {
+  mutation FeedPet($_id: ID!, $hunger: Int!) {
+    feedPet(_id: $_id, hunger: $hunger) {
       _id
       name
       hunger
@@ -81,8 +81,8 @@ export const UPDATE_PET_HUNGER = gql`
 
 // TODO: Add mutation to update pet's lastPlayed timestamp
 export const UPDATE_PET_LAST_PLAYED = gql`
-  mutation PlayWithPet($id: ID!) {
-    updatePetHappiness(id: $id) {
+  mutation UpdatePetLastPlayed($_id: ID!, $lastPlayed: String!) {
+    updatePetLastPlayed(_id: $_id, lastPlayed: $lastPlayed) {
       _id
       name
       happiness

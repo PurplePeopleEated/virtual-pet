@@ -41,8 +41,8 @@ const typeDefs = `
     createPet(name: String!, species: String!, ownerId: ID!): Pet!
     updatePetName(id: ID!, name: String!): Pet!
     deletePet(id: ID!): Pet!
-    feedPet(id: ID!, hunger: Int): Pet!
-    playWithPet(id: ID!, lastPlayed: String): Pet!
+    feedPet(_id: ID!, hunger: Int): Pet!
+    updatePetLastPlayed(_id: ID!, lastPlayed: String): Pet!
   }
 `;
 
